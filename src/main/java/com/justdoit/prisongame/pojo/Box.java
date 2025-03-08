@@ -1,30 +1,43 @@
 package com.justdoit.prisongame.pojo;
 
 import com.justdoit.prisongame.utils.NumberGenerator;
-
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
-public class Box implements Comparable<Box>{
+public class Box implements Comparable<Box> {
     private int id;
-    private int prisonerId;
+    private int prisonerId = -1;
     private boolean isBoxMatchFound;
-    public boolean isBoxPrisonMatch(Prisoner prisoner){
-        return this.id == prisoner.getId();
+    private boolean isBoxOpen;
+
+    public boolean isBoxPrisonerMatch(Prisoner prisoner) {
+        return prisonerId == prisoner.getPrisonerId();
     }
-    public void selectPrisonerId(){
+
+    public void pickPrisonerId() {
         this.prisonerId = NumberGenerator.pickANumber();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Box){
-            Box boxObj = (Box) obj;
+        if (obj instanceof Box boxObj) {
             return boxObj.prisonerId == this.prisonerId;
         }
         return false;
+    }
+
+    public void openBox(){
+        this.isBoxOpen = true;
+    }
+
+    public void closeBox(){
+        this.isBoxOpen = false;
+    }
+
+    public void matchingPrisonerBoxFound(){
+        this.isBoxMatchFound = true;
     }
 
     @Override
@@ -34,6 +47,6 @@ public class Box implements Comparable<Box>{
 
     @Override
     public int compareTo(Box box) {
-        return this.id - box.getId();
+        return this.prisonerId - box.getPrisonerId();
     }
 }

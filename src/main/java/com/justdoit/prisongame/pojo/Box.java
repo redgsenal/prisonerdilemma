@@ -4,6 +4,8 @@ import com.justdoit.prisongame.utils.NumberGenerator;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Builder
 @Data
 public class Box implements Comparable<Box> {
@@ -13,10 +15,10 @@ public class Box implements Comparable<Box> {
     private boolean isBoxOpen;
 
     public boolean isBoxPrisonerMatch(Prisoner prisoner) {
-        return prisonerId == prisoner.getPrisonerId();
+        return prisonerId == prisoner.getId();
     }
 
-    public void pickPrisonerId() {
+    public void randomlyPickPrisonerId() {
         this.prisonerId = NumberGenerator.pickANumber();
     }
 
@@ -42,7 +44,7 @@ public class Box implements Comparable<Box> {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + (this.id * this.prisonerId);
+        return Objects.hash(this.id, NumberGenerator.pickANumber());
     }
 
     @Override

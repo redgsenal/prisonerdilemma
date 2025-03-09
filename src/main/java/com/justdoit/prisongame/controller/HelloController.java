@@ -14,9 +14,8 @@ import java.util.List;
 @RestController
 public class HelloController {
 
-
-    private final List<Prisoner> prisoners = new ArrayList<>();
-    private final List<Box> boxes = new ArrayList<>();
+    private List<Prisoner> prisoners = new ArrayList<>();
+    private List<Box> boxes = new ArrayList<>();
 
     @GetMapping("/")
     public String hello() {
@@ -24,8 +23,24 @@ public class HelloController {
         populatePrisoners();
         populateBoxes();
         findMatchingPrisonerWithBoxes();
+        validatePrisonersDilemma();
         log.info("==> Prisoner Game Complete!");
         return "Prisoner Game Complete";
+    }
+
+    private void validatePrisonersDilemma() {
+        int boxFound = 0;
+        for (Prisoner prisoner : prisoners) {
+            if (prisoner.isBoxFound()){
+                boxFound++;
+            }
+        }
+        log.info("Number of prisoners found their boxes: {}", boxFound);
+        if (boxFound == 100){
+            log.info("!^ ^! ALL FREE! ^^^^");
+        } else {
+            log.info("!@ @! ALL BACK TO JAIL!");
+        }
     }
 
     private void findMatchingPrisonerWithBoxes() {
@@ -37,9 +52,10 @@ public class HelloController {
     private void populatePrisoners() {
         log.info("==> Populating 100 prisoners");
         int i = 0;
+        // resets prisoners
+        prisoners = new ArrayList<>();
         while (prisoners.size() < 100) {
             var prisoner = Prisoner.builder().id(i++).build();
-            prisoner.generatePrisonerId();
             if (!prisoners.contains(prisoner)) {
                 prisoners.add(prisoner);
                 log.info(">>> Prisoner {} created...", prisoner.getId());
@@ -51,9 +67,11 @@ public class HelloController {
     private void populateBoxes() {
         log.info("==> Populating 100 Boxes");
         int i = 0;
+        // resets the boxes
+        boxes = new ArrayList<>();
         while (boxes.size() < 100) {
             var box = Box.builder().build();
-            box.pickPrisonerId();
+            box.randomlyPickPrisonerId();
             if (!boxes.contains(box)) {
                 box.setId(i++);
                 boxes.add(box);

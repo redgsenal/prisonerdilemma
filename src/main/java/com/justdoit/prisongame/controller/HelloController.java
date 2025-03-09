@@ -20,27 +20,39 @@ public class HelloController {
     @GetMapping("/")
     public String hello() {
         log.info("==> Prisoner Game Started!");
-        populatePrisoners();
-        populateBoxes();
-        findMatchingPrisonerWithBoxes();
-        validatePrisonersDilemma();
+        int tries = 0;
+        while (!isAllPrisonersFree()) {
+            log.info("Do until all prisoners are free...#try {}", tries++);
+        }
         log.info("==> Prisoner Game Complete!");
         return "Prisoner Game Complete";
     }
 
-    private void validatePrisonersDilemma() {
-        int boxFound = 0;
+    private void initializePrisonersAndBoxes(){
+        populatePrisoners();
+        populateBoxes();
+    }
+
+    private void doPrisonerDilemma(){
+        initializePrisonersAndBoxes();
+        findMatchingPrisonerWithBoxes();
+    }
+
+    private boolean isAllPrisonersFree() {
+        doPrisonerDilemma();
+        int numberOfBoxesFound = 0;
         for (Prisoner prisoner : prisoners) {
-            if (prisoner.isBoxFound()){
-                boxFound++;
+            if (prisoner.isBoxFound()) {
+                numberOfBoxesFound++;
             }
         }
-        log.info("Number of prisoners found their boxes: {}", boxFound);
-        if (boxFound == 100){
+        log.info("Number of prisoners found their boxes: {}", numberOfBoxesFound);
+        if (numberOfBoxesFound == 100) {
             log.info("!^ ^! ALL FREE! ^^^^");
-        } else {
-            log.info("!@ @! ALL BACK TO JAIL!");
+            return true;
         }
+        log.info("!@ @! ALL BACK TO JAIL!");
+        return false;
     }
 
     private void findMatchingPrisonerWithBoxes() {

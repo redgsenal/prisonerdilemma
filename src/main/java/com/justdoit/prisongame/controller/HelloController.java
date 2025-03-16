@@ -28,26 +28,22 @@ public class HelloController {
         return "Prisoner Game Complete";
     }
 
-    private void initializePrisonersAndBoxes(){
+    private void initializePrisonersAndBoxes() {
         populatePrisoners();
         populateBoxes();
     }
 
-    private void doPrisonerDilemma(){
+    private void doPrisonerDilemma() {
         initializePrisonersAndBoxes();
         findMatchingPrisonerWithBoxes();
     }
 
     private boolean isAllPrisonersFree() {
         doPrisonerDilemma();
-        int numberOfBoxesFound = 0;
-        for (Prisoner prisoner : prisoners) {
-            if (prisoner.isBoxFound()) {
-                numberOfBoxesFound++;
-            }
-        }
-        log.info("Number of prisoners found their boxes: {}", numberOfBoxesFound);
-        if (numberOfBoxesFound == 100) {
+        var prisonersFoundBoxes = prisoners.stream().filter(Prisoner::isBoxFound).toList();
+        int prisonersFoundBoxesCount = prisonersFoundBoxes.size();
+        log.info("Number of prisoners found their boxes: {}", prisonersFoundBoxesCount);
+        if (prisonersFoundBoxesCount == 100) {
             log.info("!^ ^! ALL FREE! ^^^^");
             return true;
         }
@@ -83,9 +79,9 @@ public class HelloController {
         boxes = new ArrayList<>();
         while (boxes.size() < 100) {
             var box = Box.builder().build();
+            box.setId(i++);
             box.randomlyPickPrisonerId();
             if (!boxes.contains(box)) {
-                box.setId(i++);
                 boxes.add(box);
                 log.info(">>>> Box {} created with prisoner id {}", box.getId(), box.getPrisonerId());
             }

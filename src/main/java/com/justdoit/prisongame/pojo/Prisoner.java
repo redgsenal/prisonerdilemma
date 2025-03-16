@@ -30,7 +30,7 @@ public class Prisoner implements Comparable<Prisoner> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, NumberGenerator.pickANumber());
+        return Objects.hash(this.id, this.id * 15);
     }
 
     @Override
